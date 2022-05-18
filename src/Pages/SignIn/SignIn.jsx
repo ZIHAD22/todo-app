@@ -4,6 +4,7 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import { useForm } from "react-hook-form";
 import Loading from "../Shared/Loading";
+import axios from "../../utility/axios";
 
 const SignIn = () => {
   let navigate = useNavigate();
@@ -20,7 +21,9 @@ const SignIn = () => {
   } = useForm();
 
   const handleSignIn = async (data) => {
-    await signInWithEmailAndPassword(data.userEmail, data.userPassword);
+    const { userEmail, userPassword } = data;
+    await signInWithEmailAndPassword(userEmail, userPassword);
+    reset();
   };
 
   if (loading) {
@@ -28,7 +31,13 @@ const SignIn = () => {
   }
 
   if (user) {
-    navigate(from, { replace: true });
+    const setJwt = async () => {
+      const { email } = user.user;
+      const { data: token } = await axios.post("getJwt", { email });
+      localStorage.setItem("accessToken", token.accessToken);
+      navigate(from, { replace: true });
+    };
+    setJwt();
   }
 
   return (

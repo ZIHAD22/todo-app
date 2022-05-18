@@ -6,7 +6,7 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import { toast } from "react-toastify";
 import Loading from "../Shared/Loading";
-import { async } from "@firebase/util";
+import axios from "../../utility/axios";
 
 const SignUp = () => {
   let navigate = useNavigate();
@@ -25,8 +25,9 @@ const SignUp = () => {
     });
 
   const handleSignUp = async (data) => {
-    if (data.userPassword === data.userConfirmPassword) {
-      await createUserWithEmailAndPassword(data.userEmail, data.userPassword);
+    const { userEmail, userPassword, userConfirmPassword } = data;
+    if (userPassword === userConfirmPassword) {
+      await createUserWithEmailAndPassword(userEmail, userPassword);
       reset();
     } else {
       toast.warn("Your Password And Confirm Password Dont Match");
@@ -38,7 +39,13 @@ const SignUp = () => {
   }
 
   if (user) {
-    navigate(from, { replace: true });
+    const setJwt = async () => {
+      const { email } = user.user;
+      const { data: token } = await axios.post("getJwt", { email });
+      localStorage.setItem("accessToken", token.accessToken);
+      navigate(from, { replace: true });
+    };
+    setJwt();
   }
 
   return (

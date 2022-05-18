@@ -2,20 +2,29 @@ import axios from "../../utility/axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useAuthState } from "react-firebase-hooks/auth";
+import auth from "../../firebase.init";
 
 const AddTaskModal = ({ setAddTask }) => {
+  const [user] = useAuthState(auth);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      email: user.email,
+    },
+  });
 
   const handleAddTask = async (data) => {
+    // console.log(data);
     const { data: addTaskData } = await axios.post("addTask", data);
     if (addTaskData) {
       toast.success("Task Added");
     }
+    console.log(addTaskData);
     reset();
     setAddTask(false);
   };

@@ -10,6 +10,9 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 axios.interceptors.request.use(
   function (config) {
     config.baseURL = baseURL
+    config.headers.authorization = `Bearer ${localStorage.getItem(
+      'accessToken',
+    )}`
     // Do something before request is sent
     return config
   },
