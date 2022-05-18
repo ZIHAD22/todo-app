@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 const AddTask = ({ setAddTask }) => {
   return (
     <div>
@@ -7,7 +5,7 @@ const AddTask = ({ setAddTask }) => {
         <label
           htmlFor="add-task-modal"
           onClick={() => setAddTask(true)}
-          className="btn btn-outline uppercase"
+          className="btn btn-outline btn-info uppercase"
         >
           add a task
         </label>
